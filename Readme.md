@@ -1,12 +1,12 @@
-## Readme.md
+# Readme.md
 
-# Authentication API
+## Authentication API
 
 programming language : node JS
 framework : express JS
 author : Oceanbal
 
-# Detail Project
+## Detail Project
 
 The API authentication process validates the identity of the client attempting to make a connection by using an authentication protocol.
 In this project Iam using JWT Token for validation.
@@ -17,18 +17,18 @@ Why use MongoDB ? because mongodb is simple databse for beginer and flexible sch
 
 ## End Points API :
 
-# /api/auth/register => for register user
+### /api/auth/register => for register user
 
     this endpoint required body request username(unique) and password
 
-# /api/auth/login => for login user
+### /api/auth/login => for login user
 
     this endpoint required body request username and password
 
-# /api/auth/change-password
+### /api/auth/change-password
 
     this endpoint required body request newpassword and header authorization access token
 
-# /api/auth/refresh-token
+### /api/auth/refresh-token
 
     this endpoint required header request authorization refresh token to get new access token and refresh token
