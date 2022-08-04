@@ -78,35 +78,6 @@ router.post("/login", async (req, res) => {
   res.json({ status: "error", error: "Invalid username/password" });
 });
 
-router.post("/change-password", async (req, res) => {
-  const { token, newpassword: plainTextPassword } = req.body;
-
-  if (!plainTextPassword || typeof plainTextPassword !== "string") {
-    return res.json({ status: "error", error: "Invalid password" });
-  }
-
-  if (plainTextPassword.length < 8) {
-    return res.json({
-      status: "error",
-      error: "Password too small. Should be atleast 8 characters",
-    });
-  }
-
-  try {
-    const user = jwt.verify(token, config.secret);
-
-    const _id = user.id;
-    const password = await bcrypt.hash(plainTextPassword, 10);
-
-    await User.updateOne({ _id }, { $set: { password } });
-
-    return res.json({ status: "ok", message: "password changed" });
-  } catch (error) {
-    console.log(error);
-    res.json({ status: "error", error: ";))" });
-  }
-});
-
 router.post("/refresh-token", async (req, res) => {
   // get authorization token from header request
 
@@ -140,6 +111,42 @@ router.post("/refresh-token", async (req, res) => {
     .catch((err) => {
       res.json(err);
     });
+});
+
+router.post("/change-password", async (req, res) => {
+  const { newpassword: plainTextPassword } = req.body;
+  let accessToken = null;
+  try {
+    accesToken =
+      req.headers["authorization"].split(" ")[1] || req.Authorization;
+  } catch (error) {
+    return res.status(400).json({ status: "error", error: "No Token" });
+  }
+
+  if (!plainTextPassword || typeof plainTextPassword !== "string") {
+    return res.json({ status: "error", error: "Invalid password" });
+  }
+
+  if (plainTextPassword.length < 8) {
+    return res.json({
+      status: "error",
+      error: "Password too small. Should be atleast 8 characters",
+    });
+  }
+
+  try {
+    const user = jwt.verify(accesToken, config.secret);
+
+    const _id = user._id;
+    const password = await bcrypt.hash(plainTextPassword, 10);
+
+    await User.updateOne({ _id }, { $set: { password } });
+
+    return res.json({ status: "ok", message: "password changed" });
+  } catch (error) {
+    console.log(error);
+    res.json({ status: "error", error: "Token Not Valid" });
+  }
 });
 
 module.exports = router;
